@@ -1,70 +1,24 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, ScrollView, Image } from 'react-native';
 
-import FetchLocationBtn from './components/FetchLocation';
+import FetchCredsBtn from './components/FetchCreds';
+import UserInputForm, { getUserCredsAPI } from './components/UserInput';
 
 export default class App extends React.Component {
 
-  state = {
-    getLocationPressed: null,
-    userLocation: null,
-    otherUsersLocations: [] 
-  }
-
-  getUserLocationHandler = () => {
-    navigator.geolocation.getCurrentPosition(position => {
-
-      this.setState({
-        userLocation: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.0622,
-          longitudeDelta: 0.0421
-        },
-        getLocationPressed: {
-          isPressed: true
-        }
-      });
-
-      fetch('https://testapp-206216.firebaseio.com/places.json', {
-        method: 'POST',
-        body: JSON.stringify({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        })
-      })
-      .then(res => console.log(res)) 
-      .catch(err => console.log(err)); 
-      
-    }), err => console.log(err); 
-  }
-
-  otherUsersHandler = () => {
-      fetch('https://testapp-206216.firebaseio.com/places.json')
-      .then(res => res.json()) 
-      .then(parsedRes => { 
-        const otherUsersLocationsArray = []; 
-        for (const key in parsedRes) { 
-          otherUsersLocationsArray.push({
-            latitude: parsedRes[key].latitude,
-            longitude: parsedRes[key].longitude,
-            id: key
-          });
-        }
-        this.setState({ 
-          otherUsersLocations: otherUsersLocationsArray
-        });
-      })
-      .catch(err => console.log(err)); 
-  }
-
   render() {
     return (
-      <View style={styles.container}>
-        <FetchLocationBtn
-          onGetLocation={this.getUserLocationHandler} 
-        />
-      </View>
+			<ScrollView 
+				scrollEnabled={false}
+				keyboardShouldPersistTaps='handled'
+				keyboardDismissMode='on-drag'
+				contentContainerStyle={styles.container}>
+				<Image resizeMode='center' source={require('./images/lojixLogo.png')} />
+				<UserInputForm/>
+				<FetchCredsBtn
+					onGetCreds={getUserCredsAPI} // this is the exported arrow function from UserInput.js
+				/>
+      </ScrollView>
     );
   }
 }
@@ -73,8 +27,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    flex: 1
-  },
+		justifyContent: 'center',
+		flexDirection: 'column',
+		flex: 1,
+		bottom: 50
+	}
 });
