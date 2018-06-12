@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, ScrollView, Image } from 'react-native';
 
-import FetchCredsBtn from './components/FetchCreds';
-import UserInputForm, { getUserCredsAPI } from './components/UserInput';
+import SubmitCredsBtn from './components/submitCreds';
+import UserInputForm, { getUserCredsAPI } from './components/userInput';
 
 export default class App extends React.Component {
 
@@ -15,7 +15,7 @@ export default class App extends React.Component {
 				contentContainerStyle={styles.container}>
 				<Image resizeMode='center' source={require('./images/lojixLogo.png')} />
 				<UserInputForm/>
-				<FetchCredsBtn
+				<SubmitCredsBtn
 					onGetCreds={getUserCredsAPI} // this is the exported arrow function from UserInput.js
 				/>
       </ScrollView>

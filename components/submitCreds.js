@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Button } from 'react-native-elements';
 
-const fetchcreds = props => {
+const submitCreds = props => {
   return (
     <View>
       <Button
@@ -23,4 +23,4 @@ const fetchcreds = props => {
   );
 }
 
-export default fetchcreds;
+export default submitCreds;
