@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import t from 'tcomb-form-native';
 
 export const getUserCredsAPI = () => {
-	fetch('https://login-project-8fb27.firebaseio.com/UserCreds.json', {
+	fetch('https://login-project-8fb27.firebaseio.com/creds.json', {
 		method: 'POST',
 		body: JSON.stringify(this.submittedForm.getValue())
 	})
