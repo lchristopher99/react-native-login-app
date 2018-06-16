@@ -1,81 +1,74 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, {Component} from 'react';
+import {View} from 'react-native';
+import {UserInput} from './userInput1';
 
-import t from 'tcomb-form-native';
+//export const userCreds; // exports let var above so as to use it in verification process located in credsAPI
 
-export const getUserCreds = () => {
-	let userCreds = submittedForm.getValue();
-  let userHost = submittedHost.getValue();
+export default class UserCredsState extends Component {
+  state = {
+    UserCreds: null
+  };
 
-  if (userCreds !== null && userHost !== null) { // exported modal function will be placed within this error log nested if statement
-    getUserCredsAPI()
-  } else if (userCreds == null && userHost == null) {
-    console.log('Username or password not entered.'),
-    console.log('Hostname not entered.')
-	} else if (userCreds == null) {
-    console.log('Username or password not entered.')
-  } else {
-    console.log('Hostname not entered.')
+  onGetUserInputForm() {
+    this.userInput.submittedForm.getValue();
   }
+
+  onGetUserInputHost() {
+    this.userInput.submittedHost.getValue();
+  }
+
+  getUserCreds = () => {
+    let userCreds = this.onGetUserInputForm.bind(this);
+    let userHost = this.onGetUserInputHost.bind(this);
+  
+    if (userCreds !== null && userHost !== null) { // exported modal function will be placed within this error log nested if statement
+      // getUserCredsAPI()
+      // this.setState(
+      //   {UserCreds: this.onGetUserInputForm.bind(this)},
+      //   () => console.log(this.state.UserCreds) // used callback to only return state once UserCreds has been updated
+      // )
+
+      console.log(this.onGetUserInputForm.bind(this)) // I LEFT OFF HERE...Message logs despite conditional
+    } else if (userCreds == null && userHost == null) {
+      console.log('Username or password not entered.'),
+      console.log('Hostname not entered.')
+    } else if (userCreds == null) {
+      console.log('Username or password not entered.')
+    } else {
+      console.log('Hostname not entered.')
+    }
+  };
+
+  getUserCredsAPI = () => {
+    let userHost = this.onGetUserInputHost.bind(this);
+    let parsedHost = JSON.stringify(userHost.hostname);
+    let parsedHostname = parsedHost.replace(/["]/g, '');
+    let url = 'https://' + parsedHostname + '.firebaseio.com/creds.json'
+    console.log(url);
+  
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(this.onGetUserInputForm.bind(this))
+    })
+    .then(res => console.log(res)) 
+    .catch(err => console.log(err)); 
+    // add error if 404 is recieved from incorrect hostname
+  }
+
+  render() {
+    return (
+      <HiddenView hide>
+        <UserInput
+          ref={ref => (this.userInput = ref)}
+        />
+      </HiddenView>
+    )
+  };
 }
 
-const getUserCredsAPI = () => {
-	let userHost = submittedHost.getValue();
-	let parsedHost = JSON.stringify(userHost.hostname);
-	let parsedHostname = parsedHost.replace(/["]/g, '');
-	let url = 'https://' + parsedHostname + '.firebaseio.com/creds.json'
-	console.log(url);
-	fetch(url, {
-		method: 'POST',
-		body: JSON.stringify(this.submittedForm.getValue())
-	})
-	.then(res => console.log(res)) 
-	.catch(err => console.log(err)); 
-	// add error if 404 is recieved from incorrect hostname
-}
-
-
-
-const userinput = () => { 	
-
-	const Form = t.form.Form;
-
-	const User = t.struct({
-		username: t.String,
-		password: t.String, // need to obscure this text field
-	});
-
-	const Host = t.struct({
-		hostname: t.String
-	});
-
-	return (
-		<View style={styles.container}>
-			<Form 
-				ref={a => this.submittedForm = a} // assigned a ref
-				options={options}
-				type={User} />
-			<Form
-				ref={b => this.submittedHost = b}
-				type={Host}
-			/>
-		</View>
-  );
-}
-
-const options = {
-	fields: {
-		password: {
-			password: true,
-			secureTextEntry: true
-		}
-	}
-}
-
-const styles = StyleSheet.create({
-  container: {
-    width: '70%'
-  },
-});
-
-export default userinput;
+const HiddenView = (props) => { // hides the above view so as to avoid rendering twice
+  const {hide} = props;
+  if (hide) {
+    return null;
+  }
+};

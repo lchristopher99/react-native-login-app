@@ -9,7 +9,7 @@ export default class LoginErrModal extends Component {
 
   state = {
     modalVisible: false,
-  };
+  }
 
   setModalVisible(visible) {
     this.setState({modalVisible: visible});
@@ -21,7 +21,6 @@ export default class LoginErrModal extends Component {
         <Modal
           animationType="slide"
           transparent={true}
-          onBackdropPress = {() => this.setState({modalVisible: false})}
           visible={this.state.modalVisible}
           onRequestClose={() => {
             alert('Modal has been closed.');
