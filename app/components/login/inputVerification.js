@@ -7,7 +7,7 @@ export default class InputVerification extends Component { // LoginFormVerify
     userCredsState: null
   }
 
-  getUserCreds = () => { // handles form verification errors
+  getUserCreds = (callback) => { // handles form verification errors
     let userCreds = this.userInputForm.submittedForm.getValue();
     let userHost = this.userInputForm.submittedHost.getValue();
 
@@ -21,6 +21,8 @@ export default class InputVerification extends Component { // LoginFormVerify
     } else {
       console.log('Hostname not entered.')
     }
+
+    callback();
   };
 
   responseMessage = () => { // handles response status logging
@@ -92,9 +94,6 @@ export default class InputVerification extends Component { // LoginFormVerify
     )
   };
 }
-
-
-
 
 
 

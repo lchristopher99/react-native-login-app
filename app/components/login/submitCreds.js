@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
-const submitCreds = props => {
+export default (props) => {
   return (
     <View>
       <Button
@@ -23,5 +23,3 @@ const submitCreds = props => {
     </View>
   );
 }
-
-export default submitCreds;
