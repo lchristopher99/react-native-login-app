@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 
+// library components
 import { Button } from 'react-native-elements';
 
 export default (props) => {

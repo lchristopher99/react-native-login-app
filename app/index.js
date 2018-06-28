@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
+
+// stackNav
 import { createRootNavigator } from './router';
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      signedIn: false,
-      checkedSignIn: false
-    };
-  }
+  state = {
+    signedIn: false
+  };
 
   render() {
     const { signedIn } = this.state;
 
     const Login = createRootNavigator(signedIn)
     return <Login/>;
-  }
+  };
 }
+
+export const app = new App();

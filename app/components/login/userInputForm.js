@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 
+// library components
 import t from 'tcomb-form-native';
 
 export default class UserInputForm extends Component {
@@ -38,9 +39,6 @@ const options = {
     password: {
       password: true,
       secureTextEntry: true
-    },
-    hostname: {
-      autoCapitalize: 'none'
     }
   }
 }
