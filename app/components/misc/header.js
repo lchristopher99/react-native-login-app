@@ -8,7 +8,7 @@ export default (props) => {
   return (
     <View style={styles.hamburgerContainer}>
       <View style={styles.hamburger}>
-        <HamburgerMenu />
+        <HamburgerMenu/>
 
         <View style={styles.hamburgerHome}>
           <Text style={styles.headerText}>{props.title}</Text>
@@ -20,7 +20,7 @@ export default (props) => {
 
 const styles = StyleSheet.create({
   hamburgerContainer: {
-    height: '10%',
+    height: 80,
     justifyContent: 'flex-end',
     backgroundColor: '#154576'
   },
@@ -37,4 +37,4 @@ const styles = StyleSheet.create({
     color: '#ABC72E',
     fontSize: 20
   }
-})
+});

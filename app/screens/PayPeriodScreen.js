@@ -8,8 +8,6 @@ export default class PayPeriod extends Component {
   render() {
     return (    
       <View style={styles.container}>
-        <ScreenHeader title='Pay Period'/>
-
         <View style={styles.textContainer}>
           <Text style={styles.text}>Welcome Pay Period!</Text>
         </View>

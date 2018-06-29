@@ -8,8 +8,6 @@ export default class YesterdayScreen extends Component {
   render() {
     return (    
       <View style={styles.container}>
-        <ScreenHeader title='Yesterday'/>
-
         <View style={styles.textContainer}>
           <Text style={styles.text}>Welcome Yesterday!</Text>
         </View>

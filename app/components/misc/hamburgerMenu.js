@@ -10,14 +10,22 @@ export default class HamburgerMenu extends Component {
       active: false
     }
   }
-  
+
+  activateCross = () => {
+    this.setState({active: !this.state.active});
+    if (this.state.active) {
+      this.props.navigate.closeDrawer();
+    } else {
+      this.props.navigate.openDrawer();
+    }
+  }
 
   render() {
     return (
       <Hamburger
         active={this.state.active}
         type='cross'
-        onPress={() => this.setState({active: !this.state.active}, console.log('drawer'))}
+        onPress={this.activateCross}
       />
     )
   }
