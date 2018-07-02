@@ -1,9 +1,8 @@
 import React from 'react';
-import { createStackNavigator, createDrawerNavigator, NavigationActions } from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
 
 // custom components
 import { Icon } from 'react-native-elements';
-import HamburgerMenu from './components/misc/hamburgerMenu';
 
 // screens
 import LoginScreen from './screens/LoginScreen';
@@ -48,8 +47,7 @@ export const DrawerNav = createDrawerNavigator({
       iconContainerStyle: {
         left: 25
       },
-      activeTintColor: '#ABC72E',
-      onItemPress: () => console.log('item pressed!')
+      activeTintColor: '#ABC72E'
     }
   }
 );
@@ -70,7 +68,7 @@ export const rootNav = createStackNavigator({
           title: 'LOJIX',
           headerTintColor: '#ABC72E',
           headerStyle: { backgroundColor: '#154576' },
-          headerLeft: <HamburgerMenu navigate={navigation} />
+          headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent'/>
         })
       }
     })
@@ -79,6 +77,6 @@ export const rootNav = createStackNavigator({
   {
     headerMode: 'none',
     title: 'Main',
-    initialRouteName: 'SignedIn'
+    initialRouteName: 'SignedOut'
   }
 );

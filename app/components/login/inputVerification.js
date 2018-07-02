@@ -19,13 +19,15 @@ export default class InputVerification extends Component { // LoginFormVerify
     
         if (credsArrayUser == userCredsUser) {
           if (credsArrayPass == userCredsPass) {
-            console.log('Success! User verified!'); // navigation to next page on this call
+            setTimeout(() => {
+              alert('Success! User verified!'); // navigation to next page on this call
+            }, 1500);
             resolve(true);
           } else {
-            console.log('Username/Password does not match database.');
+            alert('Username/Password does not match database.');
           }
         } else {
-          console.log('Username/Password does not match database.');
+          alert('Username/Password does not match database.');
         }
       }
 
@@ -46,7 +48,7 @@ export default class InputVerification extends Component { // LoginFormVerify
               {credsArray: userCredsObj},
               () => verifyUser()
             )
-          }).catch(error => console.log(error + '. You probably included an invalid character in the hostname, try again.'))
+          }).catch(error => alert(error + '. You probably included an invalid character in the hostname, try again.'))
     
         const userCredsForm = this.userInputForm.submittedForm.getValue();
         this.setState({userCredsState: userCredsForm});
@@ -64,11 +66,11 @@ export default class InputVerification extends Component { // LoginFormVerify
               console.log('Connection to DB succesful!')
               credsApiVerify()
             } else {
-              console.log('Connection to DB failed.')
+              alert('Connection to DB failed.')
             }
-          }).catch(error => console.log(error + '. You probably included an invalid character in the hostname, try again.'))
+          }).catch(error => alert(error + '. You probably included an invalid character in the hostname, try again.'))
         } else {
-          console.log('Incorrect hostname.')
+          alert('Incorrect hostname.')
         }
       };
       
@@ -79,12 +81,11 @@ export default class InputVerification extends Component { // LoginFormVerify
         if (userCreds !== null && userHost !== null) { 
           responseMessage();
         } else if (userCreds == null && userHost == null) {
-            console.log('Username or password not entered.'),
-            console.log('Hostname not entered.')
+            alert('Username or password not entered. Hostname not entered.')
         } else if (userCreds == null) {
-          console.log('Username or password not entered.')
+          alert('Username or password not entered.')
         } else {
-          console.log('Hostname not entered.')
+          alert('Hostname not entered.')
         }
       };
     
@@ -95,14 +96,20 @@ export default class InputVerification extends Component { // LoginFormVerify
   };
 
   render() {
-    return (
-      <UserInputForm
-        ref={ref => (this.userInputForm = ref)}
-      />
-    )
+    let { hide } = this.props;
+    if (!hide) {
+      return (
+        <UserInputForm
+          ref={ref => (this.userInputForm = ref)}
+        />
+      )
+    } else {
+      return null;
+    }
   };
 }
 
+export const inputVerification = new InputVerification();
 
 // getUserCredsAPI = () => { // connects to host and posts creds to DB
   //   let userHost = this.userInputForm.submittedHost.getValue();
@@ -115,9 +122,9 @@ export default class InputVerification extends Component { // LoginFormVerify
   //     body: JSON.stringify(this.userInputForm.submittedForm.getValue())
   //   }).then(res => {
   //       if (res.ok) {
-  //         console.log('Success!')
+  //         alert('Success!')
   //       } else {
-  //         console.log('Incorrect hostname.')
+  //         alert('Incorrect hostname.')
   //       }
   //     })
   // }
