@@ -6,7 +6,9 @@ export default class TodayScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Welcome Today!</Text>
+          <Text style={styles.text}>Canvas R&D: Database Development</Text>
+          <Text>190.75</Text>
+          
         </View>
       </View>
     )
@@ -25,6 +27,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   text: {
-    fontSize: 24
+    fontSize: 17
   }
 })

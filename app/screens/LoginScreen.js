@@ -1,15 +1,41 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image } from 'react-native';
+import { StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 
+// imported components
 import SubmitCredsBtn from '../components/login/submitCreds';
+
+// imported helper files
 import InputVerification from '../components/login/inputVerification';
+
 
 // import LoginErrModal from '../components/login/loginErrModal';
 
 export default class LoginScreen extends Component {
+  state = {
+    animate: false,
+    isHidden: false
+  }
+
+  setLoader = () => {
+    this.inputVerification.userVerification()
+      .then(res => {
+        if (res == true) {
+          this.setState({ animate: true });
+          this.setState({ isHidden: true });
+          setTimeout(() => {
+            this.props.navigation.navigate('SignedIn');
+            this.setState({ animate: false });
+            this.setState({ isHidden: false });
+          }, 1500);
+        } else {
+          alert('An error occured. Check setLoader.')
+        }
+      })
+  }
+
   render() {
     return (
-      <ScrollView 
+      <ScrollView
         scrollEnabled={false}
         keyboardShouldPersistTaps='handled'
         keyboardDismissMode='on-drag'
@@ -18,22 +44,24 @@ export default class LoginScreen extends Component {
           resizeMode='center' source={require('../images/lojixLogo.png')}
         />
         <InputVerification
+          hide={this.state.isHidden}
           ref={ref => (this.inputVerification = ref)}
         />
-        <SubmitCredsBtn
+        <SubmitCredsBtn           
           //onGetCreds={() => this.errorModal.setModalVisible(true)} // error modal uses this handler
-          onGetCreds={
-            () => this.inputVerification.userVerification()
-              .then(() => this.props.navigation.navigate('SignedIn'))
-          }
+          hide={this.state.isHidden}
+          onGetCreds={this.setLoader}
+        />
+        <ActivityIndicator
+          style={styles.activity}
+          animating={this.state.animate}
+          size='large'
+          color='green'
         />
       </ScrollView>
     );
   }
 }
-
-export const loginScreen = new LoginScreen();
-
 
 const styles = StyleSheet.create({
   container: {
@@ -43,5 +71,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     paddingBottom: 150
+  },
+  activity: {
+    top: 40
   }
 });
