@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from 'react-native-elements';
+import { NavigationActions } from 'react-navigation';
+
+const navigateAction = NavigationActions.navigate({
+  routeName: 'SignedOut',
+  action: NavigationActions.navigate({ routeName: 'SignedOut' }),
+});
 
 
 export default class LogOutScreen extends Component { // Add function that refreshes app to logout user?
@@ -10,7 +16,7 @@ export default class LogOutScreen extends Component { // Add function that refre
         <View style={styles.textContainer}>
           <Button
             title='LogOut'
-            onPress={() => console.log('logout')}
+            onPress={() => this.props.navigation.dispatch(navigateAction)}
             buttonStyle={{
               top: 25,
               backgroundColor: 'green',
