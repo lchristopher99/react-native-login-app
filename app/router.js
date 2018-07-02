@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation';
 
 // custom components
 import { Icon } from 'react-native-elements';
@@ -52,7 +52,7 @@ export const DrawerNav = createDrawerNavigator({
   }
 );
 
-export const rootNav = createStackNavigator({
+export const rootNav = createSwitchNavigator({
   SignedOut: {
     screen: createStackNavigator({
       Login: {
@@ -66,6 +66,7 @@ export const rootNav = createStackNavigator({
         screen: DrawerNav,
         navigationOptions: ({ navigation }) => ({
           title: 'LOJIX',
+          gesturesEnabled: false,
           headerTintColor: '#ABC72E',
           headerStyle: { backgroundColor: '#154576' },
           headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent'/>

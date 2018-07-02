@@ -7,9 +7,6 @@ import SubmitCredsBtn from '../components/login/submitCreds';
 // imported helper files
 import InputVerification from '../components/login/inputVerification';
 
-
-// import LoginErrModal from '../components/login/loginErrModal';
-
 export default class LoginScreen extends Component {
   state = {
     animate: false,
@@ -24,8 +21,6 @@ export default class LoginScreen extends Component {
           this.setState({ isHidden: true });
           setTimeout(() => {
             this.props.navigation.navigate('SignedIn');
-            this.setState({ animate: false });
-            this.setState({ isHidden: false });
           }, 1500);
         } else {
           alert('An error occured. Check setLoader.')
