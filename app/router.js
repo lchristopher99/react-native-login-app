@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation';
 
-// custom components
+// imported libraries
 import { Icon } from 'react-native-elements';
 
 // screens
@@ -39,6 +39,7 @@ export const DrawerNav = createDrawerNavigator({
   }
 },
   {
+    initialRouteName: 'PayPeriod',
     drawerWidth: 300,
     contentOptions: {
       itemStyle: {
@@ -78,6 +79,6 @@ export const rootNav = createSwitchNavigator({
   {
     headerMode: 'none',
     title: 'Main',
-    initialRouteName: 'SignedOut'
+    initialRouteName: 'SignedIn'
   }
 );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 
 // imported components
-import SubmitCredsBtn from '../components/login/submitCreds';
+import SubmitCredsBtn from '../components/misc/submitCreds';
 
 // imported helper files
 import InputVerification from '../components/login/inputVerification';
@@ -44,8 +44,9 @@ export default class LoginScreen extends Component {
         />
         <SubmitCredsBtn           
           //onGetCreds={() => this.errorModal.setModalVisible(true)} // error modal uses this handler
+          title='Login'
           hide={this.state.isHidden}
-          onGetCreds={this.setLoader}
+          onSubmit={this.setLoader}
         />
         <ActivityIndicator
           style={styles.activity}

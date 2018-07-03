@@ -109,8 +109,6 @@ export default class InputVerification extends Component { // LoginFormVerify
   };
 }
 
-export const inputVerification = new InputVerification();
-
 // getUserCredsAPI = () => { // connects to host and posts creds to DB
   //   let userHost = this.userInputForm.submittedHost.getValue();
   //   let parsedHost = JSON.stringify(userHost.hostname);

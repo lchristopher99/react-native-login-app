@@ -13,8 +13,8 @@ export default (props) => {
   return (
     <View>
       <Button
-        title="Submit"
-        onPress={props.onGetCreds}
+        title={props.title}
+        onPress={props.onSubmit}
         iconRight={{name: 'check', type: 'entypo'}}
         buttonStyle={{
 					top: 25,
