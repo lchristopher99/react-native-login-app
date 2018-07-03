@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import { Text, StyleSheet, View } from "react-native";
 
 // custom components
-import LateHours from '../components/yesterdayScreen/lateHours';
+import SubmitPayPeriod from '../components/misc/submitCreds';
 
 export default class YesterdayScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>{yesterdaysDate}</Text>
+        <Text style={styles.text}>Pay period dates will go here</Text>
         <View style={styles.textContainer}>
           <Text style={styles.text}>Canvas R&D: Database Development</Text>
-          <Text>SLIN: 2018 R&D Labor</Text>
-          <Text>190.75{"\n"}</Text>
-          <LateHours/>
+          <Text style={styles.text}>Total Hours: {"\n"}</Text>
+          <SubmitPayPeriod 
+            onSubmit={() => alert('Schwifty')}
+            title='Submit' 
+          />
         </View>
       </View>
     )
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textContainer: {
-    height: '50%',
+    height: '25%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'

@@ -42,7 +42,7 @@ export default class LoginScreen extends Component {
           hide={this.state.isHidden}
           ref={ref => (this.inputVerification = ref)}
         />
-        <SubmitCredsBtn           
+        <SubmitCredsBtn
           //onGetCreds={() => this.errorModal.setModalVisible(true)} // error modal uses this handler
           title='Login'
           hide={this.state.isHidden}

@@ -39,7 +39,6 @@ export const DrawerNav = createDrawerNavigator({
   }
 },
   {
-    initialRouteName: 'PayPeriod',
     drawerWidth: 300,
     contentOptions: {
       itemStyle: {
@@ -79,6 +78,6 @@ export const rootNav = createSwitchNavigator({
   {
     headerMode: 'none',
     title: 'Main',
-    initialRouteName: 'SignedIn'
+    initialRouteName: 'SignedOut'
   }
 );
