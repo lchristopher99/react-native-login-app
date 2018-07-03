@@ -1,110 +1,98 @@
 import React, { Component } from 'react';
+import { View, ActivityIndicator } from 'react-native';
 
 // custom components
 import UserInputForm from './userInputForm';
 
 export default class InputVerification extends Component { // LoginFormVerify
-  userVerification = () => {
+  state = {
+    hostnameState: null,
+    userCredsState: null,
+    is_auth: null,
+    auth_error: null,
+    name: null,
+    timeDayData: null,
+    animate: false
+  }
+
+  loginAttempt = () => {
     return new Promise((resolve) => {
-      state = {
-        credsArray: [],
-        userCredsState: null
-      }
-  
-      const verifyUser = () => { // verifies user creds with creds on DB 
-        let credsArrayUser = this.state.credsArray[0].username;
-        let credsArrayPass = this.state.credsArray[0].password;
-        let userCredsUser = this.state.userCredsState.username;
-        let userCredsPass = this.state.userCredsState.password;
-    
-        if (credsArrayUser == userCredsUser) {
-          if (credsArrayPass == userCredsPass) {
-            setTimeout(() => {
-              alert('Success! User verified!'); // navigation to next page on this call
-            }, 1500);
-            resolve(true);
-          } else {
-            alert('Username/Password does not match database.');
-          }
-        } else {
-          alert('Username/Password does not match database.');
-        }
-      }
-
-      const credsApiVerify = () => { // adds user credentials from DB to local array for later comparrison
-        let url = 'https://login-project-8fb27.firebaseio.com/creds.json'
-    
-        fetch(url)
-          .then(response => response.json())
+      const verifyUser = () => {
+        let url = 'https://' + this.state.hostnameState.hostname + '.lojix.com/mobile/mobile_api';
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            p: 'login',
+            username: this.state.userCredsState.username,
+            password: this.state.userCredsState.password
+          }),
+        })
+          .then(res => res.json())
           .then(parsedRes => {
-            const userCredsObj = [];
-            for (const key in parsedRes) {
-              userCredsObj.push({
-                username: parsedRes[key].username,
-                password: parsedRes[key].password
-              });
-            }
-            this.setState(
-              {credsArray: userCredsObj},
-              () => verifyUser()
-            )
-          }).catch(error => alert(error + '. You probably included an invalid character in the hostname, try again.'))
-    
-        const userCredsForm = this.userInputForm.submittedForm.getValue();
-        this.setState({userCredsState: userCredsForm});
-      };
-
-      const responseMessage = () => { // handles response status logging
-        let userHost = this.userInputForm.submittedHost.getValue();
-        let parsedHost = JSON.stringify(userHost.hostname);
-        if (parsedHost == '"Dev"') {
-          let url = 'https://login-project-8fb27.firebaseio.com/creds.json'
-
-          fetch(url)
-          .then((res) => {
-            if (res.ok) {
-              console.log('Connection to DB succesful!')
-              credsApiVerify()
+            this.state.is_auth = parsedRes.is_auth;
+            this.state.auth_error = parsedRes.auth_error;
+            if (parsedRes.is_auth) {
+              this.state.name = parsedRes.name;
+              this.state.timeDayData = parsedRes.todaysData.date_readable_long;
+              console.log(this.state);
+              console.log(parsedRes);
+              this.setState({ animate: false },
+                resolve(true));
             } else {
-              alert('Connection to DB failed.')
+              alert('Username/Password does not match database.')
             }
-          }).catch(error => alert(error + '. You probably included an invalid character in the hostname, try again.'))
-        } else {
-          alert('Incorrect hostname.')
-        }
-      };
-      
-      const getUserCreds = () => { // handles form verification errors
+          })
+          .catch(err => console.log(err));
+      }
+
+      const formValidate = () => { // handles form verification errors
+        this.setState({ animate: true })
+
         let userCreds = this.userInputForm.submittedForm.getValue();
         let userHost = this.userInputForm.submittedHost.getValue();
-    
-        if (userCreds !== null && userHost !== null) { 
-          responseMessage();
+
+        if (userCreds !== null && userHost !== null) {
+          this.setState({ userCredsState: userCreds },
+            this.setState({ hostnameState: userHost },
+              () => verifyUser()
+            )
+          );
         } else if (userCreds == null && userHost == null) {
-            alert('Username or password not entered. Hostname not entered.')
+          alert('Username or password not entered. Hostname not entered.')
         } else if (userCreds == null) {
           alert('Username or password not entered.')
         } else {
           alert('Hostname not entered.')
         }
       };
-    
-      getUserCreds(); 
-      // after this function is called, functions flow backwards ^^^. 
-      // ie. getUserCreds, responseMessage, credsApiVerify...
+
+      formValidate();
     })
   };
 
   render() {
-    let { hide } = this.props;
+    let { hide, componentStyle, activityStyle } = this.props;
     if (!hide) {
       return (
-        <UserInputForm
-          ref={ref => (this.userInputForm = ref)}
-        />
+        <View style={componentStyle}>
+          <UserInputForm
+            ref={ref => (this.userInputForm = ref)}
+          />
+        </View>
       )
     } else {
-      return null;
+      return (
+        <ActivityIndicator
+          style={activityStyle}
+          animating={this.state.animate}
+          size='large'
+          color='green'
+        />
+      )
     }
   };
 }

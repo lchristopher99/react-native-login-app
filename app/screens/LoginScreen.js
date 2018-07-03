@@ -1,27 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, Image } from 'react-native';
 
-// imported components
-import SubmitCredsBtn from '../components/misc/submitCreds';
-
-// imported helper files
+// imported helper files/components
 import InputVerification from '../components/login/inputVerification';
+import SubmitCredsBtn from '../components/misc/submitCreds';
 
 export default class LoginScreen extends Component {
   state = {
-    animate: false,
     isHidden: false
   }
 
   setLoader = () => {
-    this.inputVerification.userVerification()
+    this.setState({ isHidden: true });
+    this.inputVerification.loginAttempt()
       .then(res => {
         if (res == true) {
-          this.setState({ animate: true });
-          this.setState({ isHidden: true });
-          setTimeout(() => {
-            this.props.navigation.navigate('SignedIn');
-          }, 1500);
+          this.props.navigation.navigate('SignedIn');
         } else {
           alert('An error occured. Check setLoader.')
         }
@@ -39,20 +33,16 @@ export default class LoginScreen extends Component {
           resizeMode='center' source={require('../images/lojixLogo.png')}
         />
         <InputVerification
-          hide={this.state.isHidden}
           ref={ref => (this.inputVerification = ref)}
+          hide={this.state.isHidden}
+          componentStyle={styles.userFormContainer}
+          activityStyle={styles.activity}
         />
         <SubmitCredsBtn
           //onGetCreds={() => this.errorModal.setModalVisible(true)} // error modal uses this handler
-          title='Login'
           hide={this.state.isHidden}
-          onSubmit={this.setLoader}
-        />
-        <ActivityIndicator
-          style={styles.activity}
-          animating={this.state.animate}
-          size='large'
-          color='green'
+          title='Login'
+          onSubmit={() => this.setLoader()}
         />
       </ScrollView>
     );
@@ -67,6 +57,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     paddingBottom: 150
+  },
+  userFormContainer: {
+    width: '65%'
   },
   activity: {
     top: 40

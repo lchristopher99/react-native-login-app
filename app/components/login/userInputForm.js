@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
 // library components
 import t from 'tcomb-form-native';
@@ -7,7 +7,7 @@ import t from 'tcomb-form-native';
 export default class UserInputForm extends Component {
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <Form
           ref={a => this.submittedForm = a}
           options={options}
@@ -42,9 +42,3 @@ const options = {
     }
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '70%'
-  },
-});
