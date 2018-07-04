@@ -17,7 +17,7 @@ export default class LoginScreen extends Component {
         if (res == true) {
           this.props.navigation.navigate('SignedIn');
         } else {
-          alert('An error occured. Check setLoader.')
+          this.setState({ isHidden: false })
         }
       })
   }

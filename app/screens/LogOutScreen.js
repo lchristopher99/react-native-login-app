@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, AsyncStorage } from "react-native";
 import { Button } from 'react-native-elements';
 import { NavigationActions } from 'react-navigation';
 
@@ -9,14 +9,20 @@ const navigateAction = NavigationActions.navigate({
 });
 
 
-export default class LogOutScreen extends Component { // Add function that refreshes app to logout user?
+export default class LogOutScreen extends Component { 
+  _handleLogout = () => {
+    AsyncStorage.removeItem('#userDataKey');
+    this.props.navigation.dispatch(navigateAction);
+    //console.log(AsyncStorage.getAllKeys())
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <Button
             title='LogOut'
-            onPress={() => this.props.navigation.dispatch(navigateAction)}
+            onPress={this._handleLogout}
             buttonStyle={{
               top: 25,
               backgroundColor: 'green',

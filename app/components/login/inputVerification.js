@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, AsyncStorage } from 'react-native';
 
 // custom components
 import UserInputForm from './userInputForm';
@@ -9,10 +9,17 @@ export default class InputVerification extends Component { // LoginFormVerify
     hostnameState: null,
     userCredsState: null,
     is_auth: null,
-    auth_error: null,
-    name: null,
-    timeDayData: null,
-    animate: false
+    parsedResponse: null
+  }
+
+  _storeData = async () => {
+    try {
+      let userData = this.state.parsedResponse;
+
+      await AsyncStorage.setItem('#userDataKey', JSON.stringify(userData));
+    } catch (error) {
+      alert('Error storing data.')
+    }
   }
 
   loginAttempt = () => {
@@ -34,16 +41,16 @@ export default class InputVerification extends Component { // LoginFormVerify
           .then(res => res.json())
           .then(parsedRes => {
             this.state.is_auth = parsedRes.is_auth;
-            this.state.auth_error = parsedRes.auth_error;
             if (parsedRes.is_auth) {
-              this.state.name = parsedRes.name;
-              this.state.timeDayData = parsedRes.todaysData.date_readable_long;
-              console.log(this.state);
-              console.log(parsedRes);
-              this.setState({ animate: false },
-                resolve(true));
+              this.state.parsedResponse = parsedRes;
+              // console.log(this.state.parsedResponse);
+              this.setState({ animate: false });
+              this._storeData();
+              resolve(true);
             } else {
-              alert('Username/Password does not match database.')
+              this.setState({ animate: false });
+              resolve(false);
+              alert('Username/Password does not match database.');
             }
           })
           .catch(err => console.log(err));
@@ -96,6 +103,8 @@ export default class InputVerification extends Component { // LoginFormVerify
     }
   };
 }
+
+export const inputVerification = new InputVerification();
 
 // getUserCredsAPI = () => { // connects to host and posts creds to DB
   //   let userHost = this.userInputForm.submittedHost.getValue();

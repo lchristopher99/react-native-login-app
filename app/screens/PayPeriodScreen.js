@@ -1,17 +1,47 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, AsyncStorage } from "react-native";
 
 // custom components
 import SubmitPayPeriod from '../components/misc/submitCreds';
 
 export default class YesterdayScreen extends Component {
+  state = {
+    chargeCodeName: null,
+    totalHours: null
+  }
+
+  _retrieveData = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('#userDataKey');
+      const parsedUser = JSON.parse(userData);
+
+      if (parsedUser !== null) {
+        //console.log(parsedUser)
+
+        const charge_code_name = parsedUser.todaysData.timecard_items[0].charge_code_name;
+        const total_hours = parsedUser.todaysData.total_hours;
+
+        this.setState({totalHours: total_hours});
+        this.setState({chargeCodeName: charge_code_name});
+
+        //console.log(AsyncStorage.getAllKeys())
+      }
+     } catch (error) {
+      alert('Error retrieving data.')
+    }
+  }
+
+  componentWillMount() {
+    this._retrieveData();
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Pay period dates will go here</Text>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Canvas R&D: Database Development</Text>
-          <Text style={styles.text}>Total Hours: {"\n"}</Text>
+          <Text style={styles.text}>{this.state.chargeCodeName}</Text>
+          <Text style={styles.text}>Total Hours: {this.state.totalHours}{"\n"}</Text>
           <SubmitPayPeriod 
             onSubmit={() => alert('Schwifty')}
             title='Submit' 
