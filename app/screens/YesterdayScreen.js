@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator } from "react-native";
 
 // custom components
-import UserHours from '../components/todayScreen/userHours';
+import LateHours from '../components/yesterdayScreen/lateHours';
 
 // improted functions
 import { _getYesterdaysData } from "../activities/getYesterdaysData";
@@ -53,7 +53,7 @@ export default class YesterdayScreen extends Component {
             <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
             <Text>{this.state.ChargeCodeTitle}</Text>
             <Text>Balance: {this.state.Balance}{"\n"}</Text>
-            <UserHours />
+            <LateHours />
           </View>
         </View>
       )
