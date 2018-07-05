@@ -11,9 +11,8 @@ const navigateAction = NavigationActions.navigate({
 
 export default class LogOutScreen extends Component { 
   _handleLogout = () => {
-    AsyncStorage.removeItem('#userDataKey');
     this.props.navigation.dispatch(navigateAction);
-    //console.log(AsyncStorage.getAllKeys())
+    //console.log(AsyncStorage.getAllKeys());
   }
 
   render() {

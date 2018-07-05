@@ -1,65 +1,76 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, AsyncStorage } from "react-native";
+import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator } from "react-native";
 
 // custom components
-import LateHours from '../components/yesterdayScreen/lateHours';
+import UserHours from '../components/todayScreen/userHours';
+
+// improted functions
+import { _getYesterdaysData } from "../activities/getYesterdaysData";
 
 export default class YesterdayScreen extends Component {
   state = {
-    chargeCodeName: null,
-    chargeCodeTitle: null,
-    balance: null
-  }
-
-  _retrieveData = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('#userDataKey');
-      const parsedUser = JSON.parse(userData);
-
-      if (parsedUser !== null) {
-        //console.log(parsedUser)
-
-        const charge_code_name = parsedUser.todaysData.timecard_items[0].charge_code_name;
-        const charge_code_title = parsedUser.todaysData.timecard_items[0].charge_code_title;
-        const dbBalance = parsedUser.todaysData.timecard_items[0].balance
-
-        if(charge_code_title.length > 19) charge_code_title = charge_code_title.substring(0,19);
-
-        this.setState({chargeCodeName: charge_code_name});
-        this.setState({chargeCodeTitle: charge_code_title});
-        this.setState({balance: dbBalance});
-
-        //console.log(AsyncStorage.getAllKeys())
-      }
-     } catch (error) {
-      alert('Error retrieving data.')
-    }
+    YesterdaysDate: null,
+    ChargeCodeName: null,
+    ChargeCodeTitle: null,
+    Balance: null,
+    isHidden: false
   }
 
   componentWillMount() {
-    this._retrieveData();
-  }
+    this.setState({ isHidden: true })
+    _getYesterdaysData()
+      .then(res => {
+        if (res) {
+          setDataState = async () => {
+            this.setState({ isHidden: false })
+
+            let unparsedYesterdaysData = await AsyncStorage.getItem('#yesterdaysData');
+            let yesterdaysData = JSON.parse(unparsedYesterdaysData)
+
+            let charge_code_title = yesterdaysData.data.timecard_items[0].charge_code_title;
+            if (charge_code_title.length > 19) charge_code_title = charge_code_title.substring(0, 19);
+
+            this.setState({
+              YesterdaysDate: yesterdaysData.data.date_readable,
+              ChargeCodeName: yesterdaysData.data.timecard_items[0].charge_code_name,
+              ChargeCodeTitle: charge_code_title,
+              Balance: yesterdaysData.data.timecard_items[0].balance
+            });
+          }
+          setDataState();
+          //console.log(AsyncStorage.getAllKeys());
+        }
+      })
+  };
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>{yesterdaysDate}</Text>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>{this.state.chargeCodeName}</Text>
-          <Text>{this.state.chargeCodeTitle}</Text>
-          <Text>{this.state.balance}{"\n"}</Text>
-          <LateHours />
+    let hide = this.state.isHidden;
+    if (!hide) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.text}>{this.state.YesterdaysDate}</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
+            <Text>{this.state.ChargeCodeTitle}</Text>
+            <Text>Balance: {this.state.Balance}{"\n"}</Text>
+            <UserHours />
+          </View>
         </View>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View>
+          <Text style={styles.activityText}>Loading Yesterdays Data...</Text>
+          <ActivityIndicator
+            style={styles.activity}
+            size='large'
+            color='green'
+          />
+        </View>
+      )
+    }
   }
 };
-
-const date = new Date().getDate() - 1;
-const month = new Date().getMonth() + 1;
-const year = new Date().getFullYear();
-
-const yesterdaysDate = month + '/' + date + '/' + year;
 
 const styles = StyleSheet.create({
   container: {
@@ -69,12 +80,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textContainer: {
-    height: '50%',
+    height: '40%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
   },
   text: {
     fontSize: 17
+  },
+  activity: {
+    top: 40
+  },
+  activityText: {
+    alignSelf: 'center',
+    paddingTop: 35,
+    fontSize: 17,
+    color: 'green'
   }
 })

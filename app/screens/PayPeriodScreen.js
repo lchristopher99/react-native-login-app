@@ -1,62 +1,71 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, AsyncStorage } from "react-native";
+import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator } from "react-native";
 
 // custom components
-import SubmitPayPeriod from '../components/misc/submitCreds';
+import UserHours from '../components/todayScreen/userHours';
 
-export default class YesterdayScreen extends Component {
+// improted functions
+import { _getPayPeriodData } from "../activities/getPayPeriodData";
+
+export default class PayPeriodScreen extends Component {
   state = {
-    chargeCodeName: null,
-    totalHours: null
-  }
-
-  _retrieveData = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('#userDataKey');
-      const parsedUser = JSON.parse(userData);
-
-      if (parsedUser !== null) {
-        //console.log(parsedUser)
-
-        const charge_code_name = parsedUser.todaysData.timecard_items[0].charge_code_name;
-        const total_hours = parsedUser.todaysData.total_hours;
-
-        this.setState({totalHours: total_hours});
-        this.setState({chargeCodeName: charge_code_name});
-
-        //console.log(AsyncStorage.getAllKeys())
-      }
-     } catch (error) {
-      alert('Error retrieving data.')
-    }
+    PayPeriodStart: null,
+    PayPeriodEnd: null,
+    ChargeCodeName: null,
+    TotalHours: null,
+    isHidden: false
   }
 
   componentWillMount() {
-    this._retrieveData();
-  }
+    this.setState({ isHidden: true })
+    _getPayPeriodData()
+      .then(res => {
+        if (res) {
+          setDataState = async () => {
+            this.setState({ isHidden: false })
+            let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodData');
+            let payPeriodData = JSON.parse(unparsedPayPeriodData)
+
+            this.setState({
+              PayPeriodStart: payPeriodData.data.start_readable,
+              PayPeriodEnd: payPeriodData.data.end_readable,
+              ChargeCodeName: payPeriodData.data.charge_codes[0].charge_code_name,
+              TotalHours: payPeriodData.data.charge_codes[0].total_hours
+            });
+          }
+          setDataState();
+          //console.log(AsyncStorage.getAllKeys());
+        }
+      })
+  };
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Pay period dates will go here</Text>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>{this.state.chargeCodeName}</Text>
-          <Text style={styles.text}>Total Hours: {this.state.totalHours}{"\n"}</Text>
-          <SubmitPayPeriod 
-            onSubmit={() => alert('Schwifty')}
-            title='Submit' 
+    let hide = this.state.isHidden;
+    if (!hide) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.text}>{this.state.PayPeriodStart} - {this.state.PayPeriodEnd}</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
+            <Text>Total Hours: {this.state.TotalHours}{"\n"}</Text>
+            <UserHours />
+          </View>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <Text style={styles.activityText}>Loading Pay Period Data...</Text>
+          <ActivityIndicator
+            style={styles.activity}
+            size='large'
+            color='green'
           />
         </View>
-      </View>
-    )
+      )
+    }
   }
 };
-
-const date = new Date().getDate() - 1;
-const month = new Date().getMonth() + 1;
-const year = new Date().getFullYear();
-
-const yesterdaysDate = month + '/' + date + '/' + year;
 
 const styles = StyleSheet.create({
   container: {
@@ -66,12 +75,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textContainer: {
-    height: '25%',
+    height: '40%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
   },
   text: {
     fontSize: 17
+  },
+  activity: {
+    top: 40
+  },
+  activityText: {
+    alignSelf: 'center',
+    paddingTop: 35,
+    fontSize: 17,
+    color: 'green'
   }
 })
