@@ -5,7 +5,7 @@ import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } f
 import UserHours from '../components/todayScreen/userHours';
 
 // improted functions
-import { _getPayPeriodData } from "../activities/getPayPeriodData";
+import { _getPayPeriodData } from "../activities/getData/getPayPeriodData";
 
 export default class PayPeriodScreen extends Component {
   state = {

@@ -5,7 +5,7 @@ import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } f
 import UserHours from '../components/todayScreen/userHours';
 
 // improted functions
-import { _getTodaysData } from "../activities/getTodaysData";
+import { _getTodaysData } from "../activities/getData/getTodaysData";
 
 export default class TodayScreen extends Component {
   state = {

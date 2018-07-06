@@ -5,7 +5,7 @@ import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } f
 import LateHours from '../components/yesterdayScreen/lateHours';
 
 // improted functions
-import { _getYesterdaysData } from "../activities/getYesterdaysData";
+import { _getYesterdaysData } from "../activities/getData/getYesterdaysData";
 
 export default class YesterdayScreen extends Component {
   state = {

@@ -8,7 +8,7 @@ import t from 'tcomb-form-native';
 import SubmitHours from '../../components/misc/submitCreds';
 
 //imported functions
-import { _submitYesterdaysHours } from '../../activities/submitYesterdaysHours';
+import { _submitYesterdaysHours } from '../../activities/submitData/submitYesterdaysHours';
 
 export default class LateHours extends Component {
   constructor(props) {
