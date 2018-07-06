@@ -27,6 +27,8 @@ export default class YesterdayScreen extends Component {
             let unparsedYesterdaysData = await AsyncStorage.getItem('#yesterdaysData');
             let yesterdaysData = JSON.parse(unparsedYesterdaysData)
 
+            AsyncStorage.setItem('#idslinKey', JSON.stringify(yesterdaysData.data.timecard_items[0].idslin_personnel));
+
             let charge_code_title = yesterdaysData.data.timecard_items[0].charge_code_title;
             if (charge_code_title.length > 19) charge_code_title = charge_code_title.substring(0, 19);
 

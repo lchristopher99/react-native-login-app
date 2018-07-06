@@ -15,13 +15,9 @@ export default class InputVerification extends Component { // LoginFormVerify
     try {
       let isAuth = this.state.parsedResponse.is_auth;
       let hostname = this.state.hostnameState.hostname;
-      let dataUser = this.state.userCredsState.username;
-      let dataPass = this.state.userCredsState.password;
 
       await AsyncStorage.setItem('#authKey', JSON.stringify(isAuth));
       await AsyncStorage.setItem('#hostKey', JSON.stringify(hostname));
-      await AsyncStorage.setItem('#dataUser', JSON.stringify(dataUser));
-      await AsyncStorage.setItem('#dataPass', JSON.stringify(dataPass));
     } catch (error) {
       alert('Error storing data.')
     }

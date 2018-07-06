@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, AsyncStorage } from 'react-native';
 
 // imported libraries
 import t from 'tcomb-form-native';
@@ -7,32 +7,55 @@ import t from 'tcomb-form-native';
 // custom components
 import SubmitHours from '../../components/misc/submitCreds';
 
+//imported functions
+import { _submitTodaysHours } from '../../activities/submitTodaysHours';
+
 export default class UserHours extends Component {
+  constructor(props) {
+    super(props);
+
+    this.alertSuccess = this.alertSuccess.bind(this);
+  }
+
   state = {
     animate: false,
-    isHidden: false
+    hours: null,
+    comments: null
   };
 
-  logHours = () => {
-    let hours = this.refs.userHours.getValue();
-    if (hours) { // connects to DB and posts hours
-      this.setState({ animate: true });
-      //console.log(hours);
-      let url = 'https://login-project-8fb27.firebaseio.com/hours.json'
+  alertSuccess() {
+    this.setState({ animate: false })
+    alert('Hours Submitted!')
+  }
 
-      fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(hours)
-      }).then(res => {
-        if (res.ok) {
-          alert('Hours saved!');
-        } else {
-          alert('An error occured. Status: ' + res.status)
-        }
-      }).then(() => this.setState({ animate: false }))
-        .catch(() => console.log('An error occurred. Check logHours.'))
+  _handleTodaysHours = async () => {
+    try {
+      let submittedForm = this.refs.userHours.getValue();
+
+      await AsyncStorage.setItem('#todayFormKey', JSON.stringify(submittedForm));
+  
+      if (submittedForm) {
+        this.setState({ 
+          hours: submittedForm.hours,
+          comments: submittedForm.comments,
+          animate: true 
+        }, () =>
+          _submitTodaysHours()
+            .then((res) => {
+              if (res) {
+                this.alertSuccess();
+              } else {
+                this.setState({ animate: false });
+              }
+            })
+        )
+      } else {
+        //alert('No hours have been entered.')
+      }
+    } catch (error) {
+      alert (error)
     }
-  };
+  }
 
   render() {
     return (
@@ -46,8 +69,7 @@ export default class UserHours extends Component {
         <View style={styles.buttonContainer}>
           <SubmitHours
             title='Save'
-            hide={this.state.isHidden}
-            onSubmit={this.logHours}
+            onSubmit={this._handleTodaysHours}
           />
         </View>
 

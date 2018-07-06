@@ -77,6 +77,6 @@ export const rootNav = createSwitchNavigator({
   {
     headerMode: 'none',
     title: 'Main',
-    initialRouteName: 'SignedIn'
+    initialRouteName: 'SignedOut'
   }
 );
