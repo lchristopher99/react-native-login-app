@@ -17,7 +17,7 @@ export default class UserHours extends Component {
     let hours = this.refs.userHours.getValue();
     if (hours) { // connects to DB and posts hours
       this.setState({ animate: true });
-      console.log(hours);
+      //console.log(hours);
       let url = 'https://login-project-8fb27.firebaseio.com/hours.json'
 
       fetch(url, {

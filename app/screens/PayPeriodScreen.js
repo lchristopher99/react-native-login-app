@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator } from "react-native";
+import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } from "react-native";
 
 // custom components
 import UserHours from '../components/todayScreen/userHours';
@@ -43,14 +43,19 @@ export default class PayPeriodScreen extends Component {
     let hide = this.state.isHidden;
     if (!hide) {
       return (
-        <View style={styles.container}>
-          <Text style={styles.text}>{this.state.PayPeriodStart} - {this.state.PayPeriodEnd}</Text>
+        <ScrollView 
+          scrollEnabled={false}
+          keyboardShouldPersistTaps='handled'
+          keyboardDismissMode='on-drag'
+          contentContainerStyle={styles.container}
+        >
+          <Text style={styles.textDate}>{this.state.PayPeriodStart} - {this.state.PayPeriodEnd}</Text>
           <View style={styles.textContainer}>
             <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
             <Text>Total Hours: {this.state.TotalHours}{"\n"}</Text>
             <UserHours />
           </View>
-        </View>
+        </ScrollView>
       )
     } else {
       return (
@@ -75,12 +80,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textContainer: {
-    height: '40%',
+    height: '30%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
   },
   text: {
+    fontSize: 17
+  },
+  textDate: {
+    paddingBottom: 90,
     fontSize: 17
   },
   activity: {
