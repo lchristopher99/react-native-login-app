@@ -66,7 +66,6 @@ export const rootNav = createSwitchNavigator({
         screen: DrawerNav,
         navigationOptions: ({ navigation }) => ({
           title: 'LOJIX',
-          gesturesEnabled: false,
           headerTintColor: '#ABC72E',
           headerStyle: { backgroundColor: '#154576' },
           headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent'/>
