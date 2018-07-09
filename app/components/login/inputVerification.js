@@ -42,6 +42,7 @@ export default class InputVerification extends Component { // LoginFormVerify
           .then(res => res.json())
           .then(parsedRes => {
             if (parsedRes.is_auth) {
+              //console.log(parsedRes)
               this.state.parsedResponse = parsedRes;
               this.setState({ animate: false });
               this._storeData();
@@ -68,11 +69,14 @@ export default class InputVerification extends Component { // LoginFormVerify
             )
           );
         } else if (userCreds == null && userHost == null) {
-          alert('Username or password not entered. Hostname not entered.')
+          alert('Username or password not entered. Hostname not entered.'); 
+          resolve(false);
         } else if (userCreds == null) {
           alert('Username or password not entered.')
+          resolve(false);
         } else {
           alert('Hostname not entered.')
+          resolve(false);
         }
       };
 

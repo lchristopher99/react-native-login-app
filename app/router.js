@@ -32,7 +32,7 @@ export const DrawerNav = createDrawerNavigator({
     }
   },
   LogOut: {
-    screen: LogOutScreen, 
+    screen: LogOutScreen,
     navigationOptions: {
       drawerIcon: () => <Icon name='logout' type='simple-line-icon' size={20} color='#000' />
     }
@@ -68,7 +68,7 @@ export const rootNav = createSwitchNavigator({
           title: 'LOJIX',
           headerTintColor: '#ABC72E',
           headerStyle: { backgroundColor: '#154576' },
-          headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent'/>
+          headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent' />
         })
       }
     })
