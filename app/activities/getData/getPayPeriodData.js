@@ -23,7 +23,7 @@ export const _getPayPeriodData = async () => {
           .then(res => res.json())
           .then(parsedRes => {
             if (parsedRes.is_auth) {
-              //console.log(parsedRes);
+              console.log(parsedRes);
               AsyncStorage.setItem('#payPeriodDataKey', JSON.stringify(parsedRes));
               resolve(true);
             } else {

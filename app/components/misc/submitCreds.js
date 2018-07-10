@@ -5,8 +5,8 @@ import { View } from 'react-native';
 import { Button } from 'react-native-elements';
 
 export default (props) => {
-  let { hide } = props;
-  if (hide) {
+  let { hideSubmit } = props;
+  if (hideSubmit) {
     return null;
   }
 

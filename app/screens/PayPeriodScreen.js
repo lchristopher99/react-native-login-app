@@ -3,9 +3,11 @@ import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } f
 
 // custom components
 import SubmitPeriod from '../components/misc/submitCreds';
+import HiddenView from '../components/payPeriodScreen/submittedTimecardMessage';
 
-// improted functions
+// imported functions
 import { _getPayPeriodData } from "../activities/getData/getPayPeriodData";
+import { _submitPayPeriod } from '../activities/submitData/submitPayPeriod';
 
 export default class PayPeriodScreen extends Component {
   state = {
@@ -13,16 +15,38 @@ export default class PayPeriodScreen extends Component {
     PayPeriodEnd: null,
     ChargeCodeName: null,
     TotalHours: null,
-    isHidden: false
+    isHidden: null,
+    isSubmitted: null,
+    activityTitle: null,
+    timecardMessage: null
+  }
+
+  _handlePeriodSubmit = () => {
+    this.setState({
+      activityTitle: 'Submitting Pay Period...',
+      isHidden: true
+    })
+    _submitPayPeriod()
+      .then(res => {
+        if (res) {
+          this.setState({
+            isHidden: false,
+            isSubmitted: true,
+            timecardMessage: 'Pay Period Submitted!'
+          });
+        }
+      })
   }
 
   componentWillMount() {
-    this.setState({ isHidden: true })
+    this.setState({
+      activityTitle: 'Loading Pay Period Data...',
+      isHidden: true
+    })
     _getPayPeriodData()
       .then(res => {
         if (res) {
           setDataState = async () => {
-            this.setState({ isHidden: false })
             let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodDataKey');
             let payPeriodData = JSON.parse(unparsedPayPeriodData)
 
@@ -30,8 +54,18 @@ export default class PayPeriodScreen extends Component {
               PayPeriodStart: payPeriodData.data.start_readable,
               PayPeriodEnd: payPeriodData.data.end_readable,
               ChargeCodeName: payPeriodData.data.charge_codes[0].charge_code_name,
-              TotalHours: payPeriodData.data.charge_codes[0].total_hours
+              TotalHours: payPeriodData.data.charge_codes[0].total_hours,
+              isHidden: false
             });
+
+            let isSubmitted = payPeriodData.data.is_submitted;
+
+            if (isSubmitted) {
+              this.setState({
+                timecardMessage: 'Pay Period Submitted!',
+                isSubmitted: true
+              })
+            }
           }
           setDataState();
           //console.log(AsyncStorage.getAllKeys());
@@ -43,7 +77,7 @@ export default class PayPeriodScreen extends Component {
     let hide = this.state.isHidden;
     if (!hide) {
       return (
-        <ScrollView 
+        <ScrollView
           scrollEnabled={false}
           keyboardShouldPersistTaps='handled'
           keyboardDismissMode='on-drag'
@@ -54,7 +88,13 @@ export default class PayPeriodScreen extends Component {
             <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
             <Text>Total Hours: {this.state.TotalHours}{"\n"}</Text>
             <SubmitPeriod
+              hideSubmit={this.state.isSubmitted}
               title='Submit Pay Period'
+              onSubmit={this._handlePeriodSubmit}
+            />
+            <HiddenView 
+              hidden={!this.state.isSubmitted}
+              message={this.state.timecardMessage} 
             />
           </View>
         </ScrollView>
@@ -62,7 +102,7 @@ export default class PayPeriodScreen extends Component {
     } else {
       return (
         <View>
-          <Text style={styles.activityText}>Loading Pay Period Data...</Text>
+          <Text style={styles.activityText}>{this.state.activityTitle}</Text>
           <ActivityIndicator
             style={styles.activity}
             size='large'

@@ -56,7 +56,7 @@ export default class LoginScreen extends Component {
           host={ref => (this.submittedHost = ref)}
         />
         <SubmitCredsBtn
-          hide={this.state.isHidden}
+          hideSubmit={this.state.isHidden}
           title='Login'
           onSubmit={() => this.setLoader()}
         />
