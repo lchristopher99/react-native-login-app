@@ -85,7 +85,15 @@ export default class UserHours extends Component {
       )
     } else {
       return (
-        <SuccessMessage message='Your timecard has been submitted. See you next pay period!' />
+        <SuccessMessage
+          name='ios-checkmark-circle-outline'
+          type='ionicon'
+          color='green'
+          hidden={!this.state.messageHidden}
+          message='Your timecard has been submitted. See you next pay period!'
+          messageColor='green'
+          messageSize={15}
+        />
       )
     }
   };
@@ -122,6 +130,6 @@ const styles = StyleSheet.create({
   },
   successMessageContainer: {
     top: 35,
-    alignItems: 'center'
+    alignSelf: 'center'
   }
 });

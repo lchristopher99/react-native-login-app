@@ -16,7 +16,7 @@ export default class LoginScreen extends Component {
 
   setLoader = async () => {
     try {
-      this.setState({ errModal: true });
+      this.setState({ errModal: true, isHidden: true });
 
       let submittedForm = this.submittedForm.getValue();
       let submittedHost = this.submittedHost.getValue();
@@ -62,9 +62,7 @@ export default class LoginScreen extends Component {
               errModal: false,
               errModalMessage: 'Incorrect Hostname.'
             })
-          } else if (res == 'loader') {
-            this.setState({ isHidden: true })
-          } 
+          }
         })
 
     } catch (error) {

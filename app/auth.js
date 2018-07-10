@@ -1,5 +1,4 @@
 import { AsyncStorage } from 'react-native';
-import { loginScreen } from './screens/LoginScreen';
 
 export default Auth = () => { // LoginFormVerify
   return new Promise((resolve) => {
@@ -65,7 +64,6 @@ export default Auth = () => { // LoginFormVerify
       try {
         if (loginForm.submittedForm !== null && loginForm.submittedHost !== null) {
           verifyUser();
-          resolve('loader'); // fix loader here
         } else if (loginForm.submittedForm == null && loginForm.submittedHost == null) {
           resolve('user&pass');
         } else if (loginForm.submittedForm == null) {
