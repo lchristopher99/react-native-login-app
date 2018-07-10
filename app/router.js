@@ -39,6 +39,7 @@ export const DrawerNav = createDrawerNavigator({
   }
 },
   {
+    initialRouteName: 'PayPeriod',
     drawerWidth: 300,
     contentOptions: {
       itemStyle: {

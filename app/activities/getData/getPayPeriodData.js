@@ -2,12 +2,12 @@ import { AsyncStorage } from 'react-native';
 
 export const _getPayPeriodData = async () => {
   try {
-    let userHost = await AsyncStorage.getItem('#hostKey');
-    let userAuth = await AsyncStorage.getItem('#authKey');
-
-    let parsedHost = JSON.parse(userHost);
+    let auth = await AsyncStorage.getItem('#authKey');
+    let parsedAuth = JSON.parse(auth);
 
     return new Promise((resolve) => {
+      let parsedHost = parsedAuth.hostname;
+      let userAuth = parsedAuth.isAuth;
       if (userAuth) {
         let url = 'https://' + parsedHost + '.lojix.com/mobile/mobile_api';
         fetch(url, {
@@ -24,7 +24,7 @@ export const _getPayPeriodData = async () => {
           .then(parsedRes => {
             if (parsedRes.is_auth) {
               //console.log(parsedRes);
-              AsyncStorage.setItem('#payPeriodData', JSON.stringify(parsedRes));
+              AsyncStorage.setItem('#payPeriodDataKey', JSON.stringify(parsedRes));
               resolve(true);
             } else {
               alert('An error occurred while fetching data.');

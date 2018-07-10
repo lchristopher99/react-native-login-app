@@ -2,17 +2,19 @@ import { AsyncStorage } from 'react-native';
 
 export const _submitTodaysHours = async () => {
   try {
-    let userHost = await AsyncStorage.getItem('#hostKey');
-    let userAuth = await AsyncStorage.getItem('#authKey');
+    let userCreds = await AsyncStorage.getItem('#authKey');
     let submittedForm = await AsyncStorage.getItem('#todayFormKey')
-    let unparsedIdslin = await AsyncStorage.getItem('#idslinKey')
+    let unparsedTodaysData = await AsyncStorage.getItem('#todaysDataKey')
 
-    let idslin = JSON.parse(unparsedIdslin)
+    let parsedCreds = JSON.parse(userCreds);
+    let todaysData = JSON.parse(unparsedTodaysData);
     let parsedTodayForm = JSON.parse(submittedForm);
-    let parsedHost = JSON.parse(userHost);
 
     return new Promise((resolve) => {
+      let parsedHost = parsedCreds.hostname;
+      let userAuth = parsedCreds.isAuth;
       if (userAuth) {
+        let idslin = todaysData.data.timecard_items[0].idslin_personnel;
         let url = 'https://' + parsedHost + '.lojix.com/mobile/mobile_api';
         fetch(url, {
           method: 'POST',

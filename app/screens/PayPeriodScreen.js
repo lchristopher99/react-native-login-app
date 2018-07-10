@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } from "react-native";
 
 // custom components
-import UserHours from '../components/todayScreen/userHours';
+import SubmitPeriod from '../components/misc/submitCreds';
 
 // improted functions
 import { _getPayPeriodData } from "../activities/getData/getPayPeriodData";
@@ -23,7 +23,7 @@ export default class PayPeriodScreen extends Component {
         if (res) {
           setDataState = async () => {
             this.setState({ isHidden: false })
-            let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodData');
+            let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodDataKey');
             let payPeriodData = JSON.parse(unparsedPayPeriodData)
 
             this.setState({
@@ -53,7 +53,9 @@ export default class PayPeriodScreen extends Component {
           <View style={styles.textContainer}>
             <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
             <Text>Total Hours: {this.state.TotalHours}{"\n"}</Text>
-            <UserHours />
+            <SubmitPeriod
+              title='Submit Pay Period'
+            />
           </View>
         </ScrollView>
       )
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textContainer: {
-    height: '30%',
+    height: '15%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'

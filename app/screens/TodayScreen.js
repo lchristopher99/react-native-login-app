@@ -28,8 +28,6 @@ export default class TodayScreen extends Component {
             let todaysData = JSON.parse(unparsedTodaysData)
             //console.log(todaysData)
 
-            AsyncStorage.setItem('#idslinKey', JSON.stringify(todaysData.data.timecard_items[0].idslin_personnel));
-
             let charge_code_title = todaysData.data.timecard_items[0].charge_code_title;
             if (charge_code_title.length > 19) charge_code_title = charge_code_title.substring(0, 19);
 
@@ -41,6 +39,7 @@ export default class TodayScreen extends Component {
             });
           }
           setDataState();
+          AsyncStorage.removeItem('#loginFormKey');
           //console.log(AsyncStorage.getAllKeys());
         }
       })

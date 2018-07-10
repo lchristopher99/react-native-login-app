@@ -2,12 +2,12 @@ import { AsyncStorage } from 'react-native';
 
 export const _getTodaysData = async () => {
   try {
-    let userHost = await AsyncStorage.getItem('#hostKey');
-    let userAuth = await AsyncStorage.getItem('#authKey');
-
-    let parsedHost = JSON.parse(userHost);
+    let auth = await AsyncStorage.getItem('#authKey');
+    let parsedAuth = JSON.parse(auth);
 
     return new Promise((resolve) => {
+      let parsedHost = parsedAuth.hostname;
+      let userAuth = parsedAuth.isAuth;
       if (userAuth) {
         let url = 'https://' + parsedHost + '.lojix.com/mobile/mobile_api';
         fetch(url, {
