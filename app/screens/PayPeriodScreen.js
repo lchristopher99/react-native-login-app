@@ -92,9 +92,14 @@ export default class PayPeriodScreen extends Component {
               title='Submit Pay Period'
               onSubmit={this._handlePeriodSubmit}
             />
-            <HiddenView 
+            <HiddenView
+              name='ios-checkmark-circle-outline'
+              type='ionicon'
+              color='green'
               hidden={!this.state.isSubmitted}
-              message={this.state.timecardMessage} 
+              message={this.state.timecardMessage}
+              messageColor='green'
+              messageSize={15}
             />
           </View>
         </ScrollView>

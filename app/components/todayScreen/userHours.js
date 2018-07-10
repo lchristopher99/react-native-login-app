@@ -64,7 +64,15 @@ export default class UserHours extends Component {
           </View>
 
           <View style={styles.successMessageContainer}>
-            <SuccessMessage hidden={this.state.messageHidden} message='Hours Submitted!' />
+            <SuccessMessage
+              name='ios-checkmark-circle-outline'
+              type='ionicon'
+              color='green'
+              hidden={this.state.messageHidden}
+              message='Hours Submitted!'
+              messageColor='green'
+              messageSize={15}
+            />
           </View>
 
           <ActivityIndicator

@@ -5,18 +5,19 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 export default props => {
-  const { hidden, message } = props;
+  const { hidden, message, type, name, color, messageColor, messageSize } = props;
   if (hidden) {
     return null;
   }
   return (
     <View style={styles.submittedContainer}>
       <Icon
-        type='ionicon'
-        name='ios-checkmark-circle-outline'
+        type={type}
+        name={name}
+        color={color}
         iconStyle={styles.iconStyle}
       />
-      <Text style={styles.iconText}>{message}</Text>
+      <Text style={{ color: messageColor, fontSize: messageSize }}>{message}</Text>
     </View>
   )
 };
@@ -24,18 +25,15 @@ export default props => {
 const styles = StyleSheet.create({
   submittedContainer: {
     flexDirection: 'row',
-    width: '75%'
+    width: '75%',
+    alignItems: 'center'
   },
   iconStyle: {
     fontSize: 40,
-    color: 'green',
-    textAlign: 'center'
+    textAlign: 'center',
+    right: 10
   },
   iconText: {
-    fontSize: 15,
-    color: 'green',
-    textAlign: 'center',
-    top: 10,
-    left: 10
+    fontSize: 15
   }
 });

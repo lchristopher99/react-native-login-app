@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native';
+import { loginScreen } from './screens/LoginScreen';
 
 export default Auth = () => { // LoginFormVerify
   return new Promise((resolve) => {
@@ -47,13 +48,11 @@ export default Auth = () => { // LoginFormVerify
               // console.log(parsedRes)
               _storeData();
             } else {
-              resolve(false);
-              alert('Username/Password does not match database.');
+              resolve('noMatch');
             }
           })
-          .catch(err => {
-            alert('Incorrect Hostname. ' + err);
-            resolve(false);
+          .catch(() => {
+            resolve('incHost');
           });
       } catch (error) {
         alert(error);
@@ -66,15 +65,13 @@ export default Auth = () => { // LoginFormVerify
       try {
         if (loginForm.submittedForm !== null && loginForm.submittedHost !== null) {
           verifyUser();
+          resolve('loader'); // fix loader here
         } else if (loginForm.submittedForm == null && loginForm.submittedHost == null) {
-          alert('Username or password not entered. Hostname not entered.');
-          resolve(false);
+          resolve('user&pass');
         } else if (loginForm.submittedForm == null) {
-          alert('Username or password not entered.')
-          resolve(false);
+          resolve('user/pass');
         } else {
-          alert('Hostname not entered.')
-          resolve(false);
+          resolve('host');
         }
       } catch (error) {
         alert(error);
