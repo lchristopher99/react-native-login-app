@@ -68,7 +68,7 @@ export default class PayPeriodScreen extends Component {
             }
           }
           setDataState();
-          //console.log(AsyncStorage.getAllKeys());
+          console.log(AsyncStorage.getAllKeys());
         }
       })
   };
