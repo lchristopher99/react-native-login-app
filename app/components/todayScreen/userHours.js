@@ -1,87 +1,86 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator, AsyncStorage } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, AsyncStorage, Text } from 'react-native';
 
 // imported libraries
 import t from 'tcomb-form-native';
 
 // custom components
 import SubmitHours from '../../components/misc/submitCreds';
+import SuccessMessage from '../../components/misc/successMessage';
 
 //imported functions
 import { _submitTodaysHours } from '../../activities/submitData/submitTodaysHours';
 
 export default class UserHours extends Component {
-  constructor(props) {
-    super(props);
-
-    this.alertSuccess = this.alertSuccess.bind(this);
-  }
-
   state = {
     animate: false,
-    hours: null,
-    comments: null
+    messageHidden: true
   };
-
-  alertSuccess() {
-    this.setState({ animate: false })
-    alert('Hours Submitted!')
-  }
 
   _handleTodaysHours = async () => {
     try {
       let submittedForm = this.refs.userHours.getValue();
 
       await AsyncStorage.setItem('#todayFormKey', JSON.stringify(submittedForm));
-  
+
       if (submittedForm) {
-        this.setState({ 
-          hours: submittedForm.hours,
-          comments: submittedForm.comments,
-          animate: true 
+        this.setState({
+          animate: true
         }, () =>
-          _submitTodaysHours()
-            .then((res) => {
-              if (res) {
-                this.alertSuccess();
-              } else {
-                this.setState({ animate: false });
-              }
-            })
+            _submitTodaysHours()
+              .then((res) => {
+                if (res) {
+                  this.setState({
+                    animate: false,
+                    messageHidden: false
+                  });
+                } else {
+                  this.setState({ animate: false });
+                }
+              })
         )
-      } else {
-        //alert('No hours have been entered.')
       }
     } catch (error) {
-      alert (error)
+      alert(error)
     }
-  }
+  };
 
   render() {
-    return (
-      <View>
-        <Form
-          ref='userHours'
-          type={Hours}
-          options={options}
-        />
+    let { hidden } = this.props;
+    if (!hidden) {
+      return (
+        <View>
+          <Form
+            ref='userHours'
+            type={Hours}
+            options={options}
+          />
 
-        <View style={styles.buttonContainer}>
-          <SubmitHours
-            title='Save'
-            onSubmit={this._handleTodaysHours}
+          <View style={styles.buttonContainer}>
+            <SubmitHours
+              title='Save'
+              onSubmit={this._handleTodaysHours}
+            />
+          </View>
+
+          <View style={styles.successMessageContainer}>
+            <SuccessMessage hidden={this.state.messageHidden} message='Hours Submitted!' />
+          </View>
+
+          <ActivityIndicator
+            style={styles.activity}
+            animating={this.state.animate}
+            size='large'
+            color='green'
           />
         </View>
-
-        <ActivityIndicator
-          style={styles.activity}
-          animating={this.state.animate}
-          size='large'
-          color='green'
-        />
-      </View>
-    )
-  }
+      )
+    } else {
+      return (
+        <SuccessMessage message='Your timecard has been submitted. See you next pay period!' />
+      )
+    }
+  };
 };
 
 
@@ -90,7 +89,7 @@ const Form = t.form.Form;
 
 const Hours = t.struct({
   hours: t.Number,
-  comments: t.String
+  comments: t.maybe(t.String)
 });
 
 var options = {
@@ -112,5 +111,9 @@ const styles = StyleSheet.create({
   },
   activity: {
     top: 40
+  },
+  successMessageContainer: {
+    top: 35,
+    alignItems: 'center'
   }
 });

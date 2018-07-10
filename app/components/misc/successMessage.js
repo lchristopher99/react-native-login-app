@@ -4,7 +4,7 @@ import { Text, View, StyleSheet } from 'react-native';
 // imported libraries
 import { Icon } from 'react-native-elements';
 
-export default HiddenView = props => {
+export default props => {
   const { hidden, message } = props;
   if (hidden) {
     return null;
@@ -23,7 +23,8 @@ export default HiddenView = props => {
 
 const styles = StyleSheet.create({
   submittedContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: '75%'
   },
   iconStyle: {
     fontSize: 40,

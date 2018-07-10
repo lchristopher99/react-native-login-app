@@ -10,11 +10,8 @@ const navigateAction = NavigationActions.navigate({
 
 
 export default class LogOutScreen extends Component { 
-  _handleLogout = () => {
-    //AsyncStorage.clear();
-    this.props.navigation.dispatch(navigateAction);
-    //console.log(AsyncStorage.getAllKeys());
-  }
+  _handleLogout = () => this.props.navigation.dispatch(navigateAction);
+  
 
   render() {
     return (

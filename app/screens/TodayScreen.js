@@ -5,7 +5,8 @@ import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } f
 import UserHours from '../components/todayScreen/userHours';
 
 // improted functions
-import { _getTodaysData } from "../activities/getData/getTodaysData";
+import { _getTodaysData } from '../activities/getData/getTodaysData';
+import { _getPayPeriodData } from '../activities/getData/getPayPeriodData';
 
 export default class TodayScreen extends Component {
   state = {
@@ -13,11 +14,26 @@ export default class TodayScreen extends Component {
     ChargeCodeName: null,
     ChargeCodeTitle: null,
     Balance: null,
-    isHidden: false
+    isHidden: false,
+    isSubmitted: null
   }
 
   componentWillMount() {
     this.setState({ isHidden: true })
+    _getPayPeriodData()
+      .then(async res => {
+        try {
+          if (res) {
+            let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodDataKey');
+            let PayPeriodData = JSON.parse(unparsedPayPeriodData);
+
+            this.setState({ isSubmitted: PayPeriodData.data.is_submitted });
+          }
+        } catch (error) {
+          alert(error);
+        }
+      })
+
     _getTodaysData()
       .then(res => {
         if (res) {
@@ -60,7 +76,7 @@ export default class TodayScreen extends Component {
             <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
             <Text>{this.state.ChargeCodeTitle}</Text>
             <Text>Balance: {this.state.Balance}{"\n"}</Text>
-            <UserHours />
+            <UserHours hidden={this.state.isSubmitted} />
           </View>
         </ScrollView>
       )

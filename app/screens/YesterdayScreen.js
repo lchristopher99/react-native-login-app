@@ -6,6 +6,8 @@ import LateHours from '../components/yesterdayScreen/lateHours';
 
 // improted functions
 import { _getYesterdaysData } from "../activities/getData/getYesterdaysData";
+import { _getPayPeriodData } from '../activities/getData/getPayPeriodData';
+
 
 export default class YesterdayScreen extends Component {
   state = {
@@ -13,11 +15,26 @@ export default class YesterdayScreen extends Component {
     ChargeCodeName: null,
     ChargeCodeTitle: null,
     Balance: null,
-    isHidden: false
+    isHidden: false,
+    isSubmitted: null
   }
 
   componentWillMount() {
     this.setState({ isHidden: true })
+    _getPayPeriodData()
+      .then(async res => {
+        try {
+          if (res) {
+            let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodDataKey');
+            let PayPeriodData = JSON.parse(unparsedPayPeriodData);
+
+            this.setState({ isSubmitted: PayPeriodData.data.is_submitted });
+          }
+        } catch (error) {
+          alert(error);
+        }
+      })
+
     _getYesterdaysData()
       .then(res => {
         if (res) {
@@ -47,7 +64,7 @@ export default class YesterdayScreen extends Component {
     let hide = this.state.isHidden;
     if (!hide) {
       return (
-        <ScrollView 
+        <ScrollView
           scrollEnabled={false}
           keyboardShouldPersistTaps='handled'
           keyboardDismissMode='on-drag'
@@ -58,7 +75,7 @@ export default class YesterdayScreen extends Component {
             <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
             <Text>{this.state.ChargeCodeTitle}</Text>
             <Text>Balance: {this.state.Balance}{"\n"}</Text>
-            <LateHours />
+            <LateHours hidden={this.state.isSubmitted} />
           </View>
         </ScrollView>
       )

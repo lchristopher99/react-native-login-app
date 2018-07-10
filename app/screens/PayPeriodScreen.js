@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } f
 
 // custom components
 import SubmitPeriod from '../components/misc/submitCreds';
-import HiddenView from '../components/payPeriodScreen/submittedTimecardMessage';
+import HiddenView from '../components/misc/successMessage';
 
 // imported functions
 import { _getPayPeriodData } from "../activities/getData/getPayPeriodData";
@@ -68,7 +68,7 @@ export default class PayPeriodScreen extends Component {
             }
           }
           setDataState();
-          console.log(AsyncStorage.getAllKeys());
+          //console.log(AsyncStorage.getAllKeys());
         }
       })
   };

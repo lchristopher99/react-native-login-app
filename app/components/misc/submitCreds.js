@@ -4,7 +4,7 @@ import { View } from 'react-native';
 // library components
 import { Button } from 'react-native-elements';
 
-export default (props) => {
+export default props => {
   let { hideSubmit } = props;
   if (hideSubmit) {
     return null;
