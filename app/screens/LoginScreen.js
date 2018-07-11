@@ -1,31 +1,73 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, Image, AsyncStorage, View } from 'react-native';
 
-// imported components
+// imported helper files/components
+import Auth from '../auth';
 import SubmitCredsBtn from '../components/misc/submitCreds';
-
-// imported helper files
-import InputVerification from '../components/login/inputVerification';
+import UserInput from '../components/login/userInput';
+import SuccessMessage from '../components/misc/successMessage';
 
 export default class LoginScreen extends Component {
   state = {
-    animate: false,
-    isHidden: false
+    isHidden: false,
+    errModal: true,
+    errModalMessage: null
   }
 
-  setLoader = () => {
-    this.inputVerification.userVerification()
-      .then(res => {
-        if (res == true) {
-          this.setState({ animate: true });
-          this.setState({ isHidden: true });
-          setTimeout(() => {
+  setLoader = async () => {
+    try {
+      this.setState({ errModal: true, isHidden: true });
+
+      let submittedForm = this.submittedForm.getValue();
+      let submittedHost = this.submittedHost.getValue();
+
+      let loginForm = {
+        submittedForm,
+        submittedHost
+      }
+
+      await AsyncStorage.setItem('#loginFormKey', JSON.stringify(loginForm));
+
+      Auth()
+        .then(res => { // form verification
+          if (res == true) {
             this.props.navigation.navigate('SignedIn');
-          }, 1500);
-        } else {
-          alert('An error occured. Check setLoader.')
-        }
-      })
+          } else if (res == 'user&pass') {
+            this.setState({
+              isHidden: false,
+              errModal: false,
+              errModalMessage: 'Username or password not entered. Hostname not entered.'
+            })
+          } else if (res == 'user/pass') {
+            this.setState({
+              isHidden: false,
+              errModal: false,
+              errModalMessage: 'Username or password not entered.'
+            })
+          } else if (res == 'host') {
+            this.setState({
+              isHidden: false,
+              errModal: false,
+              errModalMessage: 'Hostname not entered.'
+            })
+          } else if (res == 'noMatch') {
+            this.setState({
+              isHidden: false,
+              errModal: false,
+              errModalMessage: 'Username/Password does not match database.'
+            })
+          } else if (res == 'incHost') {
+            this.setState({
+              isHidden: false,
+              errModal: false,
+              errModalMessage: 'Incorrect Hostname.'
+            })
+          }
+        })
+
+    } catch (error) {
+      alert(error);
+    }
   }
 
   render() {
@@ -38,26 +80,36 @@ export default class LoginScreen extends Component {
         <Image
           resizeMode='center' source={require('../images/lojixLogo.png')}
         />
-        <InputVerification
+        <UserInput
           hide={this.state.isHidden}
-          ref={ref => (this.inputVerification = ref)}
+          componentStyle={styles.userFormContainer}
+          activityStyle={styles.activity}
+          form={ref => (this.submittedForm = ref)}
+          host={ref => (this.submittedHost = ref)}
         />
         <SubmitCredsBtn
-          //onGetCreds={() => this.errorModal.setModalVisible(true)} // error modal uses this handler
+          hideSubmit={this.state.isHidden}
           title='Login'
-          hide={this.state.isHidden}
-          onSubmit={this.setLoader}
+          onSubmit={() => this.setLoader()}
         />
-        <ActivityIndicator
-          style={styles.activity}
-          animating={this.state.animate}
-          size='large'
-          color='green'
-        />
+
+        <View style={styles.successMessageContainer}>
+          <SuccessMessage
+            name='x-circle'
+            type='feather'
+            color='red'
+            hidden={this.state.errModal}
+            message={this.state.errModalMessage}
+            messageColor='red'
+            messageSize={15}
+          />
+        </View>
       </ScrollView>
     );
   }
 }
+
+export const loginScreen = new LoginScreen();
 
 const styles = StyleSheet.create({
   container: {
@@ -68,7 +120,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 150
   },
+  userFormContainer: {
+    width: '65%'
+  },
   activity: {
     top: 40
+  },
+  successMessageContainer: {
+    top: 35,
+    alignItems: 'center'
   }
 });

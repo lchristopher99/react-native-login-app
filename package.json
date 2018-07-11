@@ -27,7 +27,6 @@
     "react-native-elements": "^0.19.1",
     "react-native-hamburger": "^0.0.2",
     "react-navigation": "^2.5.2",
-    "recompose": "^0.27.1",
     "tcomb-form-native": "^0.6.13"
   }
 }
