@@ -8,6 +8,7 @@ import HiddenView from '../components/misc/successMessage';
 // imported functions
 import { _getPayPeriodData } from "../activities/getData/getPayPeriodData";
 import { _submitPayPeriod } from '../activities/submitData/submitPayPeriod';
+import { setRouteName } from "../router";
 
 export default class PayPeriodScreen extends Component {
   state = {
@@ -18,7 +19,8 @@ export default class PayPeriodScreen extends Component {
     isHidden: null,
     isSubmitted: null,
     activityTitle: null,
-    timecardMessage: null
+    timecardMessage: null,
+    route_name: 'Pay Period'
   }
 
   _handlePeriodSubmit = () => {
@@ -39,6 +41,8 @@ export default class PayPeriodScreen extends Component {
   }
 
   componentWillMount() {
+    setRouteName(this.state.route_name);
+
     this.setState({
       activityTitle: 'Loading Pay Period Data...',
       isHidden: true

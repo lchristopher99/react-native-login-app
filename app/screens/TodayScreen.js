@@ -7,6 +7,7 @@ import UserHours from '../components/todayScreen/userHours';
 // improted functions
 import { _getTodaysData } from '../activities/getData/getTodaysData';
 import { _getPayPeriodData } from '../activities/getData/getPayPeriodData';
+import { setRouteName } from "../router";
 
 export default class TodayScreen extends Component {
   state = {
@@ -15,10 +16,13 @@ export default class TodayScreen extends Component {
     ChargeCodeTitle: null,
     Balance: null,
     isHidden: false,
-    isSubmitted: null
+    isSubmitted: null,
+    route_name: 'Today'
   }
 
   componentWillMount() {
+    setRouteName(this.state.route_name);
+
     this.setState({ isHidden: true })
     _getPayPeriodData()
       .then(async res => {

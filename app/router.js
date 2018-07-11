@@ -52,6 +52,9 @@ export const DrawerNav = createDrawerNavigator({
   }
 );
 
+const route_name = 'Today';
+export const setRouteName = (route) => route_name = route;
+
 export const rootNav = createSwitchNavigator({
   SignedOut: {
     screen: createStackNavigator({
@@ -65,7 +68,7 @@ export const rootNav = createSwitchNavigator({
       Drawer: {
         screen: DrawerNav,
         navigationOptions: ({ navigation }) => ({
-          title: 'LOJIX',
+          title: route_name,
           headerTintColor: '#ABC72E',
           headerStyle: { backgroundColor: '#154576' },
           headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent' />

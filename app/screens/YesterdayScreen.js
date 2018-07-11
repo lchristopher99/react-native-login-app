@@ -7,6 +7,7 @@ import LateHours from '../components/yesterdayScreen/lateHours';
 // improted functions
 import { _getYesterdaysData } from "../activities/getData/getYesterdaysData";
 import { _getPayPeriodData } from '../activities/getData/getPayPeriodData';
+import { setRouteName } from "../router";
 
 
 export default class YesterdayScreen extends Component {
@@ -16,10 +17,13 @@ export default class YesterdayScreen extends Component {
     ChargeCodeTitle: null,
     Balance: null,
     isHidden: false,
-    isSubmitted: null
+    isSubmitted: null,
+    route_name: 'Yesterday'
   }
 
   componentWillMount() {
+    setRouteName(this.state.route_name);
+
     this.setState({ isHidden: true })
     _getPayPeriodData()
       .then(async res => {
