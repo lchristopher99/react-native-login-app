@@ -78,7 +78,7 @@ export default class LoginScreen extends Component {
         keyboardDismissMode='on-drag'
         contentContainerStyle={styles.container}>
         <Image
-          resizeMode='center' source={require('../images/lojixLogo.png')}
+          resizeMode='center' source={require('../images/loganlocal.png')}
         />
         <UserInput
           hide={this.state.isHidden}
