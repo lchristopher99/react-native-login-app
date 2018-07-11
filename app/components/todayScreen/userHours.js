@@ -1,65 +1,102 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, AsyncStorage, Text } from 'react-native';
 
 // imported libraries
 import t from 'tcomb-form-native';
 
 // custom components
 import SubmitHours from '../../components/misc/submitCreds';
+import SuccessMessage from '../../components/misc/successMessage';
+
+//imported functions
+import { _submitTodaysHours } from '../../activities/submitData/submitTodaysHours';
 
 export default class UserHours extends Component {
   state = {
     animate: false,
-    isHidden: false
+    messageHidden: true
   };
 
-  logHours = () => {
-    let hours = this.refs.userHours.getValue();
-    if (hours) { // connects to DB and posts hours
-      this.setState({ animate: true });
-      console.log(hours);
-      let url = 'https://login-project-8fb27.firebaseio.com/hours.json'
+  _handleTodaysHours = async () => {
+    try {
+      let submittedForm = this.refs.userHours.getValue();
 
-      fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(hours)
-      }).then(res => {
-        if (res.ok) {
-          alert('Hours saved!');
-        } else {
-          alert('An error occured. Status: ' + res.status)
-        }
-      }).then(() => this.setState({ animate: false }))
-        .catch(() => console.log('An error occurred. Check logHours.'))
+      await AsyncStorage.setItem('#todayFormKey', JSON.stringify(submittedForm));
+
+      if (submittedForm) {
+        this.setState({
+          animate: true
+        }, () =>
+            _submitTodaysHours()
+              .then((res) => {
+                if (res) {
+                  this.setState({
+                    animate: false,
+                    messageHidden: false
+                  });
+                } else {
+                  this.setState({ animate: false });
+                }
+              })
+        )
+      }
+    } catch (error) {
+      alert(error)
     }
   };
 
   render() {
-    return (
-      <View>
-        <Form
-          ref='userHours'
-          type={Hours}
-          options={options}
-        />
+    let { hidden } = this.props;
+    if (!hidden) {
+      return (
+        <View>
+          <Form
+            ref='userHours'
+            type={Hours}
+            options={options}
+          />
 
-        <View style={styles.buttonContainer}>
-          <SubmitHours
-            title='Save'
-            hide={this.state.isHidden}
-            onSubmit={this.logHours}
+          <View style={styles.buttonContainer}>
+            <SubmitHours
+              title='Save'
+              onSubmit={this._handleTodaysHours}
+            />
+          </View>
+
+          <View style={styles.successMessageContainer}>
+            <SuccessMessage
+              name='ios-checkmark-circle-outline'
+              type='ionicon'
+              color='green'
+              hidden={this.state.messageHidden}
+              message='Hours Submitted!'
+              messageColor='green'
+              messageSize={15}
+            />
+          </View>
+
+          <ActivityIndicator
+            style={styles.activity}
+            animating={this.state.animate}
+            size='large'
+            color='green'
           />
         </View>
-
-        <ActivityIndicator
-          style={styles.activity}
-          animating={this.state.animate}
-          size='large'
+      )
+    } else {
+      return (
+        <SuccessMessage
+          name='ios-checkmark-circle-outline'
+          type='ionicon'
           color='green'
+          hidden={!this.state.messageHidden}
+          message='Your timecard has been submitted. See you next pay period!'
+          messageColor='green'
+          messageSize={15}
         />
-      </View>
-    )
-  }
+      )
+    }
+  };
 };
 
 
@@ -68,7 +105,7 @@ const Form = t.form.Form;
 
 const Hours = t.struct({
   hours: t.Number,
-  comments: t.String
+  comments: t.maybe(t.String)
 });
 
 var options = {
@@ -90,5 +127,9 @@ const styles = StyleSheet.create({
   },
   activity: {
     top: 40
+  },
+  successMessageContainer: {
+    top: 35,
+    alignSelf: 'center'
   }
 });

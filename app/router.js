@@ -32,7 +32,7 @@ export const DrawerNav = createDrawerNavigator({
     }
   },
   LogOut: {
-    screen: LogOutScreen, 
+    screen: LogOutScreen,
     navigationOptions: {
       drawerIcon: () => <Icon name='logout' type='simple-line-icon' size={20} color='#000' />
     }
@@ -52,6 +52,9 @@ export const DrawerNav = createDrawerNavigator({
   }
 );
 
+const route_name = 'Today';
+export const setRouteName = (route) => route_name = route;
+
 export const rootNav = createSwitchNavigator({
   SignedOut: {
     screen: createStackNavigator({
@@ -65,11 +68,10 @@ export const rootNav = createSwitchNavigator({
       Drawer: {
         screen: DrawerNav,
         navigationOptions: ({ navigation }) => ({
-          title: 'LOJIX',
-          gesturesEnabled: false,
+          title: route_name,
           headerTintColor: '#ABC72E',
           headerStyle: { backgroundColor: '#154576' },
-          headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent'/>
+          headerLeft: <Icon name='menu' size={30} onPress={() => navigation.toggleDrawer()} underlayColor='transparent' />
         })
       }
     })
@@ -78,6 +80,6 @@ export const rootNav = createSwitchNavigator({
   {
     headerMode: 'none',
     title: 'Main',
-    initialRouteName: 'SignedOut'
+    initialRouteName: 'SignedIn'
   }
 );

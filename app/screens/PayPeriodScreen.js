@@ -1,32 +1,127 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, AsyncStorage, ActivityIndicator, ScrollView } from "react-native";
 
 // custom components
-import SubmitPayPeriod from '../components/misc/submitCreds';
+import SubmitPeriod from '../components/misc/submitCreds';
+import HiddenView from '../components/misc/successMessage';
 
-export default class YesterdayScreen extends Component {
+// imported functions
+import { _getPayPeriodData } from "../activities/getData/getPayPeriodData";
+import { _submitPayPeriod } from '../activities/submitData/submitPayPeriod';
+import { setRouteName } from "../router";
+
+export default class PayPeriodScreen extends Component {
+  state = {
+    PayPeriodStart: null,
+    PayPeriodEnd: null,
+    ChargeCodeName: null,
+    TotalHours: null,
+    isHidden: null,
+    isSubmitted: null,
+    activityTitle: null,
+    timecardMessage: null,
+    route_name: 'Pay Period'
+  }
+
+  _handlePeriodSubmit = () => {
+    this.setState({
+      activityTitle: 'Submitting Pay Period...',
+      isHidden: true
+    })
+    _submitPayPeriod()
+      .then(res => {
+        if (res) {
+          this.setState({
+            isHidden: false,
+            isSubmitted: true,
+            timecardMessage: 'Pay Period Submitted!'
+          });
+        }
+      })
+  }
+
+  componentWillMount() {
+    setRouteName(this.state.route_name);
+
+    this.setState({
+      activityTitle: 'Loading Pay Period Data...',
+      isHidden: true
+    })
+    _getPayPeriodData()
+      .then(res => {
+        if (res) {
+          setDataState = async () => {
+            let unparsedPayPeriodData = await AsyncStorage.getItem('#payPeriodDataKey');
+            let payPeriodData = JSON.parse(unparsedPayPeriodData)
+
+            this.setState({
+              PayPeriodStart: payPeriodData.data.start_readable,
+              PayPeriodEnd: payPeriodData.data.end_readable,
+              ChargeCodeName: payPeriodData.data.charge_codes[0].charge_code_name,
+              TotalHours: payPeriodData.data.charge_codes[0].total_hours,
+              isHidden: false
+            });
+
+            let isSubmitted = payPeriodData.data.is_submitted;
+
+            if (isSubmitted) {
+              this.setState({
+                timecardMessage: 'Pay Period Submitted!',
+                isSubmitted: true
+              })
+            }
+          }
+          setDataState();
+          //console.log(AsyncStorage.getAllKeys());
+        }
+      })
+  };
+
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Pay period dates will go here</Text>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>Canvas R&D: Database Development</Text>
-          <Text style={styles.text}>Total Hours: {"\n"}</Text>
-          <SubmitPayPeriod 
-            onSubmit={() => alert('Schwifty')}
-            title='Submit' 
+    let hide = this.state.isHidden;
+    if (!hide) {
+      return (
+        <ScrollView
+          scrollEnabled={false}
+          keyboardShouldPersistTaps='handled'
+          keyboardDismissMode='on-drag'
+          contentContainerStyle={styles.container}
+        >
+          <Text style={styles.textDate}>{this.state.PayPeriodStart} - {this.state.PayPeriodEnd}</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>{this.state.ChargeCodeName}</Text>
+            <Text>Total Hours: {this.state.TotalHours}{"\n"}</Text>
+            <SubmitPeriod
+              hideSubmit={this.state.isSubmitted}
+              title='Submit Pay Period'
+              onSubmit={this._handlePeriodSubmit}
+            />
+            <HiddenView
+              name='ios-checkmark-circle-outline'
+              type='ionicon'
+              color='green'
+              hidden={!this.state.isSubmitted}
+              message={this.state.timecardMessage}
+              messageColor='green'
+              messageSize={15}
+            />
+          </View>
+        </ScrollView>
+      )
+    } else {
+      return (
+        <View>
+          <Text style={styles.activityText}>{this.state.activityTitle}</Text>
+          <ActivityIndicator
+            style={styles.activity}
+            size='large'
+            color='green'
           />
         </View>
-      </View>
-    )
+      )
+    }
   }
 };
-
-const date = new Date().getDate() - 1;
-const month = new Date().getMonth() + 1;
-const year = new Date().getFullYear();
-
-const yesterdaysDate = month + '/' + date + '/' + year;
 
 const styles = StyleSheet.create({
   container: {
@@ -36,12 +131,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   textContainer: {
-    height: '25%',
+    height: '15%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
   },
   text: {
     fontSize: 17
+  },
+  textDate: {
+    paddingBottom: 90,
+    fontSize: 17
+  },
+  activity: {
+    top: 40
+  },
+  activityText: {
+    alignSelf: 'center',
+    paddingTop: 35,
+    fontSize: 17,
+    color: 'green'
   }
 })
